@@ -1,25 +1,42 @@
+/*
+ * Descrição: Este programa cria múltiplos processos filhos (NUM_PROCESSES) e os faz executar
+ *           o comando "ls" via execl(). O processo pai aguarda a finalização de todos os filhos
+ *           e exibe suas respectivas terminações.
+ * 
+ * Como executar: `gcc -o processos gerenciamento_processos.c`
+ *                `./processos`
+ * 
+ * Informações adicionais: Utilize `time strace -c ./processos` para obter as estatisticas
+ */
+
+
 #include<stdlib.h>
 #include<stdio.h>
 #include<unistd.h>
 #include<sys/wait.h> 
 
-#define NUM_PROCESSES 4
+#define NUM_PROCESSES 2
 
 void run_task(int id) {
     printf("\nProcesso Filho %d iniciado (PID: %d)\n", id, getpid());
     printf("Processo fiho %d executando ls...\n", id);
-    execl("/bin/ls", "ls", (char *)NULL);  // ou usar o sleep()
+
+    // o processo agora passa a ser ls 
+    execl("/bin/ls", "ls", (char *)NULL); 
     printf("Processo Filho %d finalizado (PID: %d)\n", id, getpid());
 }
 
 int main() {
     pid_t pid;
     int status;
+
+    // loop para criar multiplos processos filhos
     for (int i = 0; i < NUM_PROCESSES; i++) {
         pid = fork();
+
         if (pid == 0) {
-            run_task(i);  // Filho executa a tarefa
-            exit(0);  // termino do filho
+            run_task(i); // filho executa run_task 
+            exit(0);     
         }
     }
 
